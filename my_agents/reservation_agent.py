@@ -1,6 +1,7 @@
 from agents import Agent, RunContextWrapper
 from models import RestaurantContext
 from tools import make_reservation, check_availability, cancel_reservation, AgentToolUsageLoggingHooks
+from output_guardrails import restaurant_output_guardrail
 
 def dynamic_reservation_agent_instructions(
     wrapper: RunContextWrapper[RestaurantContext],
@@ -34,5 +35,6 @@ reservation_agent = Agent(
     name="Reservation Agent",
     instructions=dynamic_reservation_agent_instructions,
     tools=[make_reservation, check_availability, cancel_reservation],
-    hooks=AgentToolUsageLoggingHooks()
+    hooks=AgentToolUsageLoggingHooks(),
+    output_guardrails=[restaurant_output_guardrail],
 )

@@ -18,3 +18,21 @@
     User: 아, 그전에 채식 메뉴 있는지 알려줘
     [Menu Agent로 handoff]
     Menu: 네! 여러 가지 채식 메뉴가 있습니다...
+
+과제1.
+    Restaurant Bot에 Guardrails와 Complaints Agent를 추가하세요!
+    다음 기능을 추가하세요:
+    Input Guardrails - 부적절하거나 주제에 벗어난 메시지 필터링
+    Output Guardrails - 봇이 부적절한 응답을 하지 않도록 보장
+    Complaints Agent - 불만족한 고객을 세심하게 처리하고 해결책 제시
+요구사항
+    다음을 거부하는 Input Guardrails를 추가하세요:
+        주제에 벗어난 질문 (레스토랑과 관련 없는 내용)
+        부적절한 언어
+    다음을 보장하는 Output Guardrails를 추가하세요:
+        전문적이고 정중한 응답
+        내부 정보를 노출하지 않음
+    다음과 같은 Complaints Agent를 만드세요:
+        고객의 불만을 공감하며 인정
+        해결책 제시 (환불, 할인, 매니저 콜백)
+        심각한 문제를 적절히 에스컬레이션

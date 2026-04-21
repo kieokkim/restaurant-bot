@@ -268,3 +268,132 @@ class AgentToolUsageLoggingHooks(AgentHooks):
     ):
         with st.sidebar:
             st.write(f"🏁 **{agent.name}** completed")
+
+# =============================================================================
+# COMPLAINTS AGENT TOOLS
+# =============================================================================
+
+@function_tool
+def submit_complaint(
+    context: RestaurantContext,
+    complaint_description: str,
+    severity: str,
+) -> str:
+    """
+    Submit and log a customer complaint.
+
+    Args:
+        complaint_description: Description of the complaint
+        severity: Severity level (minor, serious, critical)
+    """
+    complaint_id = f"CMP-{random.randint(10000, 99999)}"
+
+    return f"""
+📝 Complaint Logged
+🔗 Complaint ID: {complaint_id}
+👤 Customer: {context.name}
+⚠️ Severity: {severity.upper()}
+📋 Description: {complaint_description}
+⏱️ Our team will review this within 24 hours.
+    """.strip()
+
+
+@function_tool
+def process_complaint_refund(
+    context: RestaurantContext,
+    refund_amount: float,
+    reason: str,
+) -> str:
+    """
+    Process a refund as compensation for a complaint.
+
+    Args:
+        refund_amount: Amount to refund
+        reason: Reason for the refund
+    """
+    refund_id = f"REF-{random.randint(100000, 999999)}"
+
+    return f"""
+✅ Refund Processed
+🔗 Refund ID: {refund_id}
+👤 Customer: {context.name}
+💰 Amount: ₩{refund_amount:,.0f}
+📝 Reason: {reason}
+⏱️ Processing time: 1-3 business days
+    """.strip()
+
+
+@function_tool
+def apply_discount_coupon(
+    context: RestaurantContext,
+    discount_percentage: int,
+    reason: str,
+) -> str:
+    """
+    Apply a discount coupon to compensate for a minor complaint.
+
+    Args:
+        discount_percentage: Discount percentage (10, 20, 30, etc.)
+        reason: Reason for the discount
+    """
+    coupon_code = f"SORRY{random.randint(1000, 9999)}"
+
+    return f"""
+🎟️ Discount Coupon Issued
+👤 Customer: {context.name}
+💸 Discount: {discount_percentage}% off next visit
+🔑 Coupon Code: {coupon_code}
+📝 Reason: {reason}
+⏰ Valid for: 30 days
+    """.strip()
+
+
+@function_tool
+def schedule_manager_callback(
+    context: RestaurantContext,
+    preferred_time: str,
+    issue_summary: str,
+) -> str:
+    """
+    Schedule a callback from the restaurant manager.
+
+    Args:
+        preferred_time: Customer's preferred callback time
+        issue_summary: Brief summary of the issue
+    """
+    callback_id = f"CBK-{random.randint(10000, 99999)}"
+
+    return f"""
+📞 Manager Callback Scheduled
+🔗 Callback ID: {callback_id}
+👤 Customer: {context.name}
+🕐 Preferred Time: {preferred_time}
+📋 Issue: {issue_summary}
+✅ A manager will contact you at your preferred time.
+    """.strip()
+
+
+@function_tool
+def escalate_to_manager(
+    context: RestaurantContext,
+    issue_summary: str,
+    severity: str,
+) -> str:
+    """
+    Escalate a critical complaint to the manager immediately.
+
+    Args:
+        issue_summary: Summary of the critical issue
+        severity: Severity level (serious, critical)
+    """
+    ticket_id = f"ESC-{random.randint(10000, 99999)}"
+
+    return f"""
+🚨 Complaint Escalated to Manager
+🔗 Escalation ID: {ticket_id}
+👤 Customer: {context.name}
+⚡ Severity: {severity.upper()}
+📋 Issue: {issue_summary}
+⏱️ Expected response: within 1 hour
+✅ A manager has been notified immediately.
+    """.strip()

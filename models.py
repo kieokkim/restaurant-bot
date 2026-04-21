@@ -6,6 +6,12 @@ class InputGuardRailOutput(BaseModel):
     is_off_topic: bool
     reason: str
 
+class OutputGuardRailOutput(BaseModel):
+
+    is_violation: bool
+    is_professional: bool
+    reason: str
+
 class HandoffData(BaseModel):
 
     to_agent_name: str

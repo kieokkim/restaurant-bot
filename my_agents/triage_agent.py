@@ -11,16 +11,34 @@ from models import RestaurantContext, InputGuardRailOutput, HandoffData
 from my_agents.menu_agent import menu_agent
 from my_agents.order_agent import order_agent
 from my_agents.reservation_agent import reservation_agent
+from my_agents.complaints_agent import complaints_agent
 
 input_guardrail_agent = Agent(
     name="Input Guardrail Agent",
     instructions="""
-    Ensure the user's request specifically pertains to restaurant-related topics such as:
-    menu inquiries, ingredients, allergens, food orders, or table reservations.
+    You are a gatekeeper for a restaurant chatbot.
     
-    If the request is off-topic, return a reason for the tripwire.
-    You can make small conversation with the user, especially at the beginning of the conversation,
-    but don't help with requests that are not related to restaurant services.
+    ALLOW requests related to:
+    - Menu inquiries, ingredients, allergens, prices
+    - Food orders, order status, cancellations
+    - Table reservations, availability
+    - Restaurant complaints or feedback
+    - Small talk at the beginning of conversation (greetings, how are you, etc.)
+    
+    BLOCK and set is_off_topic=True for:
+    
+    1. OFF-TOPIC REQUESTS
+    - Any topic unrelated to restaurant services
+    - Politics, sports, general knowledge, coding, etc.
+    - "What's the weather?", "Help me with my homework"
+    
+    2. INAPPROPRIATE LANGUAGE
+    - Profanity, insults, or offensive language
+    - Threatening or violent expressions
+    - Sexually explicit content
+    - Harassment or discriminatory language
+    
+    When blocking, always provide a clear reason in the reason field.
     """,
     output_type=InputGuardRailOutput
 )
@@ -45,7 +63,7 @@ def dynamic_triage_agent_instructions(
     return f"""
         {RECOMMENDED_PROMPT_PREFIX}
 
-    You are a restaurant assistant. You ONLY help customers with menu inquiries, food orders, and table reservations.
+    You are a restaurant assistant. You ONLY help customers with menu inquiries, food orders, and table reservations, and complaints.
     You call customers by their name.
 
     The customer's name is {wrapper.context.name}.
@@ -72,6 +90,13 @@ def dynamic_triage_agent_instructions(
     - Cancelling or modifying reservations
     - "I'd like to book a table", "Is there availability?", "Cancel my reservation"
 
+    😤 COMPLAINTS - Route here for:
+    - Dissatisfaction with food quality or taste
+    - Poor service experience
+    - Billing or payment disputes
+    - Food safety concerns
+    - "This is not what I ordered", "The food was cold", "I was treated rudely"
+
     CLASSIFICATION PROCESS:
     1. Greet the customer warmly by name
     2. Listen to the customer's request
@@ -80,7 +105,8 @@ def dynamic_triage_agent_instructions(
     5. Route to the appropriate specialist agent
 
     SPECIAL HANDLING:
-    - Multiple requests: Handle the most urgent first
+    - Complaints take priority over other requests
+    - Multiple requests: Handle complaints first, then other issues
     - Unclear requests: Ask 1 clarifying question before routing
     - Always be friendly and welcoming
     """
@@ -117,5 +143,6 @@ triage_agent = Agent(
         make_handoff(menu_agent),
         make_handoff(order_agent),
         make_handoff(reservation_agent),
-    ]
+        make_handoff(complaints_agent),
+    ],
 )

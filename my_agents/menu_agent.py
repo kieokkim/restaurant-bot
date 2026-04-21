@@ -1,6 +1,7 @@
 from agents import Agent, RunContextWrapper
 from models import RestaurantContext
 from tools import get_menu, get_menu_item_details, check_allergens, AgentToolUsageLoggingHooks
+from output_guardrails import restaurant_output_guardrail
 
 def dynamic_menu_agent_instructions(
     wrapper: RunContextWrapper[RestaurantContext],
@@ -28,5 +29,6 @@ menu_agent = Agent(
     name="Menu Agent",
     instructions=dynamic_menu_agent_instructions,
     tools=[get_menu, get_menu_item_details, check_allergens],
-    hooks=AgentToolUsageLoggingHooks()
+    hooks=AgentToolUsageLoggingHooks(),
+    output_guardrails=[restaurant_output_guardrail],
 )
