@@ -1,9 +1,8 @@
-import dotenv
-dotenv.load_dotenv()
-
 import streamlit as st
 from openai import OpenAI
-client = OpenAI()
+
+api_key = st.secrets.get("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
 
 import asyncio
 from agents import Agent, Runner, SQLiteSession, InputGuardrailTripwireTriggered
@@ -47,8 +46,6 @@ with st.chat_message("ai"):
 ### run_agent
 async def run_agent(message):
     with st.chat_message("ai"):
-        
-        agent_caption= st.empty()
         status_placeholder = st.empty()
         text_placeholder = st.empty()
         response = ""
@@ -66,9 +63,7 @@ async def run_agent(message):
 
                 elif event.type == "agent_updated_stream_event":
                     if st.session_state["agent"].name != event.new_agent.name:
-                        # handoff 상태 표시
                         status_placeholder.info(f"🔄 **{st.session_state['agent'].name}** → **{event.new_agent.name}**")
-                        
                         st.session_state["agent"] = event.new_agent
                         text_placeholder = st.empty()
                         response = ""
