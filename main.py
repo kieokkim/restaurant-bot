@@ -1,8 +1,8 @@
+import streamlit as st
 from openai import OpenAI
 client = OpenAI(api_key=st.secrets[f"OPENAI_API_KEY"])
 
 import asyncio
-import streamlit as st
 from agents import Agent, Runner, SQLiteSession, InputGuardrailTripwireTriggered
 from models import RestaurantContext
 from my_agents.triage_agent import triage_agent
