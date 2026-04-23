@@ -1,8 +1,5 @@
-import dotenv
-dotenv.load_dotenv()
-
 from openai import OpenAI
-client = OpenAI()
+client = OpenAI(api_key=st.secrets[f"OPENAI_API_KEY"])
 
 import asyncio
 import streamlit as st
@@ -13,7 +10,6 @@ from my_agents.triage_agent import triage_agent
 restaurant_ctx = RestaurantContext(
     customer_id=1,
     name="nico",
-    tier="basic"
 )
 
 ### 한번 생성한 세션은 계속 유지
