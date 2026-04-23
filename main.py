@@ -60,24 +60,25 @@ async def run_agent(message):
 
         st.session_state["text_placeholder"] = text_placeholder
 
-        try:
-            stream = Runner.run_streamed(triage_agent, message, session=session, context=restaurant_ctx)
+        with st.spinner("답변 생성 중..."):
+            try:
+                stream = Runner.run_streamed(triage_agent, message, session=session, context=restaurant_ctx)
 
-            async for event in stream.stream_events():
-                if event.type == "raw_response_event":
-                    if event.data.type == "response.output_text.delta":
-                        response += event.data.delta
-                        text_placeholder.write(response)
+                async for event in stream.stream_events():
+                    if event.type == "raw_response_event":
+                        if event.data.type == "response.output_text.delta":
+                            response += event.data.delta
+                            text_placeholder.write(response)
 
-                elif event.type == "agent_updated_stream_event":
-                    if st.session_state["agent"].name != event.new_agent.name:
-                        status_placeholder.info(f"🔄 **{st.session_state['agent'].name}** → **{event.new_agent.name}**")
-                        st.session_state["agent"] = event.new_agent
-                        text_placeholder = st.empty()
-                        response = ""
+                    elif event.type == "agent_updated_stream_event":
+                        if st.session_state["agent"].name != event.new_agent.name:
+                            status_placeholder.info(f"🔄 **{st.session_state['agent'].name}** → **{event.new_agent.name}**")
+                            st.session_state["agent"] = event.new_agent
+                            text_placeholder = st.empty()
+                            response = ""
 
-        except InputGuardrailTripwireTriggered:
-            st.write("그 내용은 제가 도와드릴 수 없어요.")
+            except InputGuardrailTripwireTriggered:
+                st.write("그 내용은 제가 도와드릴 수 없어요.")
 
 message = st.chat_input("챗봇에게 물어볼 내용을 적어주세요.")
 
