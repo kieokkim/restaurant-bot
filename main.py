@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+import os
 
 api_key = st.secrets.get("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
@@ -14,11 +15,13 @@ restaurant_ctx = RestaurantContext(
     name="nico",
 )
 
+db_path = os.path.join("/tmp", "restaurant-bot-memory.db")
+
 ### 한번 생성한 세션은 계속 유지
 if "session" not in st.session_state:
     st.session_state["session"] = SQLiteSession(
         "chat-history",
-        "restaurant-bot-memory.db",
+        db_path,
     )
 session = st.session_state["session"]
 
