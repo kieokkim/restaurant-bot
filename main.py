@@ -41,10 +41,13 @@ async def paint_history():
 
 asyncio.run(paint_history())
 
+with st.chat_message("ai"):
+    st.write("안녕하세요 레스토랑 챗봇입니다. 무엇을 도와드릴까요?")
 
 ### run_agent
 async def run_agent(message):
     with st.chat_message("ai"):
+        
         agent_caption= st.empty()
         status_placeholder = st.empty()
         text_placeholder = st.empty()
