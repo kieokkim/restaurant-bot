@@ -1,6 +1,9 @@
+import dotenv
+dotenv.load_dotenv()
+
 import streamlit as st
 from openai import OpenAI
-client = OpenAI(api_key=st.secrets[f"OPENAI_API_KEY"])
+client = OpenAI()
 
 import asyncio
 from agents import Agent, Runner, SQLiteSession, InputGuardrailTripwireTriggered
@@ -23,7 +26,6 @@ session = st.session_state["session"]
 if "agent" not in st.session_state:
     st.session_state["agent"] = triage_agent
 
-
 ### paint_history
 async def paint_history():
     messages = await session.get_items()
@@ -43,6 +45,8 @@ asyncio.run(paint_history())
 ### run_agent
 async def run_agent(message):
     with st.chat_message("ai"):
+        agent_caption= st.empty()
+        status_placeholder = st.empty()
         text_placeholder = st.empty()
         response = ""
 
@@ -59,8 +63,9 @@ async def run_agent(message):
 
                 elif event.type == "agent_updated_stream_event":
                     if st.session_state["agent"].name != event.new_agent.name:
-                        st.write(f"🤖 transfered from {st.session_state['agent'].name} to {event.new_agent.name}")
-
+                        # handoff 상태 표시
+                        status_placeholder.info(f"🔄 **{st.session_state['agent'].name}** → **{event.new_agent.name}**")
+                        
                         st.session_state["agent"] = event.new_agent
                         text_placeholder = st.empty()
                         response = ""
@@ -69,6 +74,7 @@ async def run_agent(message):
             st.write("그 내용은 제가 도와드릴 수 없어요.")
 
 message = st.chat_input("챗봇에게 물어볼 내용을 적어주세요.")
+
 
 if message:
     if "text_placeholder" in st.session_state:
