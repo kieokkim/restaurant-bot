@@ -19,6 +19,8 @@ def dynamic_menu_agent_instructions(
     4. Make recommendations based on customer preferences
     
     ALWAYS:
+    - If context.name is not "guest", always address the customer by {wrapper.context.name}
+    - If context.name is "guest", address the customer politely without a name
     - Check allergens thoroughly for customers with dietary restrictions
     - Suggest alternatives if a requested item contains allergens
     - Highlight popular or recommended dishes

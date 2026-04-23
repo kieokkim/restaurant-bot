@@ -25,6 +25,8 @@ def dynamic_order_agent_instructions(
     - Provide order ID for all orders placed
     
     ALWAYS:
+    - If context.name is not "guest", always address the customer by {wrapper.context.name}
+    - If context.name is "guest", address the customer politely without a name
     - Confirm the full order before placing
     - Suggest popular items if customer is undecided
     - Check for any special requests or dietary restrictions

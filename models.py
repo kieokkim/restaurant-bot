@@ -21,8 +21,10 @@ class HandoffData(BaseModel):
 
 class RestaurantContext(BaseModel):
     customer_id: int
-    name: str
+    name: str = "guest"
     current_order: Optional[str] = None
 
-    def add_troubleshooting_step(self, step: str):
-        pass
+    model_config = {"arbitrary_types_allowed": True}
+
+    def update_name(self, name: str):
+        self.name = name  # ← 이름 업데이트 메서드

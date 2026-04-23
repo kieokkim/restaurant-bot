@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 # =============================================================================
 # MENU AGENT TOOLS
 # =============================================================================
-
 @function_tool
 def get_menu(context: RestaurantContext) -> str:
     """Get the full restaurant menu."""
@@ -15,9 +14,9 @@ def get_menu(context: RestaurantContext) -> str:
 🍽️ TODAY'S MENU
 
 [파스타]
+- 알리오 올리오 - ₩15,000
+- 토마토 파스타 - ₩16,000
 - 까르보나라 - ₩18,000
-- 알리오 올리오 - ₩16,000
-- 토마토 파스타 - ₩15,000
 
 [피자]
 - 마르게리타 - ₩20,000
@@ -41,14 +40,67 @@ def get_menu_item_details(context: RestaurantContext, item_name: str) -> str:
     """
     menu_details = {
         "까르보나라": {
-            "ingredients": "스파게티, 판체타, 달걀, 파르미지아노, 후추",
+            "ingredients": "스파게티, 판체타, 달걀노른자, 파르미지아노 레지아노, 후추",
             "allergens": "글루텐, 달걀, 유제품",
             "calories": "650kcal",
+            "description": "이탈리아 정통 레시피로 만든 크리미한 파스타. 생크림 없이 달걀과 치즈만으로 깊은 풍미를 냅니다.",
+            "recommended": "✅ 인기 메뉴",
+        },
+        "알리오 올리오": {
+            "ingredients": "스파게티, 마늘, 올리브오일, 페페론치노, 파슬리",
+            "allergens": "글루텐",
+            "calories": "520kcal",
+            "description": "마늘과 올리브오일의 향긋한 조화. 담백하고 깔끔한 맛으로 가볍게 즐기기 좋습니다.",
+            "recommended": "",
+        },
+        "토마토 파스타": {
+            "ingredients": "스파게티, 홈메이드 토마토소스, 바질, 파르미지아노",
+            "allergens": "글루텐, 유제품",
+            "calories": "480kcal",
+            "description": "신선한 토마토로 직접 만든 소스를 사용한 클래식 파스타. 누구나 부담 없이 즐길 수 있는 메뉴입니다.",
+            "recommended": "",
         },
         "마르게리타": {
-            "ingredients": "토마토소스, 모짜렐라, 바질",
+            "ingredients": "토마토소스, 생모짜렐라, 신선한 바질, 올리브오일",
             "allergens": "글루텐, 유제품",
             "calories": "800kcal",
+            "description": "나폴리 정통 방식으로 구운 피자. 신선한 재료의 조화가 일품입니다.",
+            "recommended": "✅ 인기 메뉴",
+        },
+        "페퍼로니": {
+            "ingredients": "토마토소스, 모짜렐라, 페퍼로니, 오레가노",
+            "allergens": "글루텐, 유제품",
+            "calories": "950kcal",
+            "description": "풍성한 페퍼로니와 진한 치즈가 어우러진 클래식 피자. 매콤하고 짭조름한 맛이 특징입니다.",
+            "recommended": "",
+        },
+        "콰트로 포르마지": {
+            "ingredients": "토마토소스, 모짜렐라, 고르곤졸라, 파르미지아노, 에멘탈",
+            "allergens": "글루텐, 유제품",
+            "calories": "1050kcal",
+            "description": "4가지 치즈의 깊고 진한 풍미. 치즈 러버를 위한 피자입니다.",
+            "recommended": "",
+        },
+        "탄산음료": {
+            "ingredients": "콜라, 사이다, 환타 중 선택",
+            "allergens": "없음",
+            "calories": "150kcal",
+            "description": "식사와 함께 즐기기 좋은 청량한 탄산음료.",
+            "recommended": "",
+        },
+        "주스": {
+            "ingredients": "오렌지, 사과, 자몽 중 선택 (100% 착즙)",
+            "allergens": "없음",
+            "calories": "120kcal",
+            "description": "매일 신선하게 착즙하는 100% 과일 주스.",
+            "recommended": "",
+        },
+        "와인 (글라스)": {
+            "ingredients": "레드 또는 화이트 선택 가능",
+            "allergens": "없음",
+            "calories": "120kcal",
+            "description": "이탈리아산 하우스 와인. 파스타, 피자와 최상의 페어링을 제공합니다.",
+            "recommended": "",
         },
     }
 
@@ -57,10 +109,11 @@ def get_menu_item_details(context: RestaurantContext, item_name: str) -> str:
         return f"'{item_name}' 메뉴 정보를 찾을 수 없어요."
 
     return f"""
-🍴 {item_name} 상세정보
-재료: {item['ingredients']}
-알레르기: {item['allergens']}
-칼로리: {item['calories']}
+🍴 {item_name} 상세정보 {item['recommended']}
+📝 설명: {item['description']}
+🥘 재료: {item['ingredients']}
+⚠️ 알레르기: {item['allergens']}
+🔥 칼로리: {item['calories']}
     """.strip()
 
 
@@ -75,16 +128,36 @@ def check_allergens(context: RestaurantContext, allergen: str) -> str:
     allergen_map = {
         "글루텐": ["까르보나라", "알리오 올리오", "토마토 파스타", "마르게리타", "페퍼로니", "콰트로 포르마지"],
         "달걀": ["까르보나라"],
-        "유제품": ["까르보나라", "마르게리타", "페퍼로니", "콰트로 포르마지"],
+        "유제품": ["까르보나라", "토마토 파스타", "마르게리타", "페퍼로니", "콰트로 포르마지"],
         "견과류": [],
+        "돼지고기": ["까르보나라", "페퍼로니"],
     }
 
-    items = allergen_map.get(allergen, [])
+    allergen_free = {
+        "글루텐": ["탄산음료", "주스", "와인 (글라스)"],
+        "달걀": ["알리오 올리오", "토마토 파스타", "마르게리타", "페퍼로니", "콰트로 포르마지", "탄산음료", "주스", "와인 (글라스)"],
+        "유제품": ["알리오 올리오", "탄산음료", "주스", "와인 (글라스)"],
+        "견과류": ["전 메뉴"],
+        "돼지고기": ["알리오 올리오", "토마토 파스타", "마르게리타", "콰트로 포르마지", "탄산음료", "주스", "와인 (글라스)"],
+    }
+
+    items = allergen_map.get(allergen, None)
+
+    if items is None:
+        return f"'{allergen}' 알레르겐 정보가 없어요. 글루텐, 달걀, 유제품, 견과류, 돼지고기 중에서 확인해드릴 수 있어요."
+
     if not items:
-        return f"✅ '{allergen}' 알레르겐이 포함된 메뉴가 없어요."
+        return f"✅ '{allergen}' 알레르겐이 포함된 메뉴가 없어요. 모든 메뉴를 안심하고 드실 수 있습니다!"
 
-    return f"⚠️ '{allergen}' 포함 메뉴:\n" + "\n".join(f"• {item}" for item in items)
+    safe = allergen_free.get(allergen, [])
 
+    return f"""
+⚠️ '{allergen}' 포함 메뉴:
+{chr(10).join(f"• {item}" for item in items)}
+
+✅ '{allergen}' 없는 메뉴:
+{chr(10).join(f"• {item}" for item in safe)}
+    """.strip()
 
 # =============================================================================
 # ORDER AGENT TOOLS
@@ -143,7 +216,6 @@ def cancel_order(context: RestaurantContext, order_id: str, reason: str) -> str:
 ❌ 주문 취소 완료
 📋 주문번호: {order_id}
 📝 사유: {reason}
-💳 결제 취소는 영업일 기준 1-2일 소요됩니다.
     """.strip()
 
 
@@ -158,7 +230,9 @@ def make_reservation(
     time: str,
     party_size: int,
     name: str,
+    contact: str,
 ) -> str:
+    context.name = name
     """
     Make a table reservation.
 
@@ -167,6 +241,7 @@ def make_reservation(
         time: Reservation time (HH:MM)
         party_size: Number of people
         name: Name for the reservation
+        contact: Contact for the reservation (010-0000-0000 형식)
     """
     reservation_id = f"RES-{random.randint(10000, 99999)}"
 
@@ -174,6 +249,7 @@ def make_reservation(
 ✅ 예약이 완료되었습니다!
 🔗 예약번호: {reservation_id}
 👤 예약자: {name}
+📞 연락처: {contact}
 📅 날짜: {date}
 🕐 시간: {time}
 👥 인원: {party_size}명

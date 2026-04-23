@@ -10,11 +10,6 @@ from agents import Agent, Runner, SQLiteSession, InputGuardrailTripwireTriggered
 from models import RestaurantContext
 from my_agents.triage_agent import triage_agent
 
-restaurant_ctx = RestaurantContext(
-    customer_id=1,
-    name="nico",
-)
-
 db_path = os.path.join("/tmp", "restaurant-bot-memory.db")
 
 ### 한번 생성한 세션은 계속 유지
@@ -43,11 +38,20 @@ async def paint_history():
 
 asyncio.run(paint_history())
 
+
+if "restaurant_ctx" not in st.session_state:
+    st.session_state["restaurant_ctx"] = RestaurantContext(
+        customer_id=1,
+        name="guest",
+    )
+
 with st.chat_message("ai"):
     st.write("안녕하세요 레스토랑 챗봇입니다. 무엇을 도와드릴까요?")
 
 ### run_agent
 async def run_agent(message):
+    restaurant_ctx = st.session_state["restaurant_ctx"]
+
     with st.chat_message("ai"):
         status_placeholder = st.empty()
         text_placeholder = st.empty()
