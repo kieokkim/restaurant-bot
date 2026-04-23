@@ -45,8 +45,9 @@ if "restaurant_ctx" not in st.session_state:
         name="guest",
     )
 
-with st.chat_message("ai"):
-    st.write("안녕하세요 레스토랑 챗봇입니다. 무엇을 도와드릴까요?")
+if not asyncio.run(session.get_items()):
+    with st.chat_message("ai"):
+        st.write("안녕하세요 레스토랑 챗봇입니다. 무엇을 도와드릴까요?")
 
 ### run_agent
 async def run_agent(message):
